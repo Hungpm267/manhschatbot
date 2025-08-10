@@ -13,7 +13,7 @@ from typing import cast
 import chainlit as cl
 
 from langchain.chat_models import init_chat_model
-llm = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
+llm = init_chat_model("gemini-2.5-flash", model_provider="google_genai", streaming = True)
 
 # ⛔ Bỏ:
 # from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -171,20 +171,33 @@ async def on_message(input_message: cl.Message):
 
     msg = cl.Message(content="")
 
-    # Gọi graph để lấy kết quả hoàn chỉnh
-    result = await graph.ainvoke(
+    # Duyệt qua các sự kiện từ graph
+    async for event in graph.astream_events(
         {"messages": [{"role": "user", "content": input_message.content}]},
         config={"configurable": {"thread_id": thread_id}},
-    )
+        version="v2",
+    ):
+        if event["event"] == "on_chat_model_stream":
+            chunk = event["data"]["chunk"].content
+            await msg.stream_token(chunk)
 
-    # Lấy AI message cuối cùng
-    last = result["messages"][-1]
-    # Nếu chắc chắn last.content là string:
-    msg.content = last.content
-    # Gửi một lần
-    await msg.send()
+    await msg.send()  # gửi tin nhắn khi xong
 
-    
+    #=====================================================================
+    # # Gọi graph để lấy kết quả hoàn chỉnh
+    # result = await graph.ainvoke(
+    #     {"messages": [{"role": "user", "content": input_message.content}]},
+    #     config={"configurable": {"thread_id": thread_id}},
+    # )
+
+    # # Lấy AI message cuối cùng
+    # last = result["messages"][-1]
+    # # Nếu chắc chắn last.content là string:
+    # msg.content = last.content
+    # # Gửi một lần
+    # await msg.send()
+
+    #============================================================================
     # runnable = cast(Runnable, cl.user_session.get("runnable"))  # type: Runnable
 
     # msg = cl.Message(content="")
