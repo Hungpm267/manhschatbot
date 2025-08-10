@@ -1,0 +1,6 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "python indexer.py && chainlit run app.py -h 0.0.0.0 -p $PORT"
+healthcheckPath = "/"
