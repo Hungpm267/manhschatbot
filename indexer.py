@@ -3,8 +3,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ✅ dùng local embeddings để không tốn quota
-from langchain_community.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
+# Dùng FastEmbed thay vì HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
+embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")  # model nhỏ, nhanh
 
 from langchain_chroma import Chroma
 vector_store = Chroma(

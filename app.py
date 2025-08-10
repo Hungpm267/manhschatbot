@@ -19,15 +19,23 @@ llm = init_chat_model("gemini-2.5-flash", model_provider="google_genai", streami
 # from langchain_google_genai import GoogleGenerativeAIEmbeddings
 # embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 # ✅ Dùng local: Dùng embedding local (miễn phí). pip install sentence-transformers langchain-community
-from langchain_community.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 
 from langchain_chroma import Chroma
+# vector_store = Chroma(
+#     collection_name="example_collection",
+#     embedding_function=embeddings,
+#     persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
+# )
+
+from langchain_community.embeddings import FastEmbedEmbeddings
+embeddings = FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 vector_store = Chroma(
     collection_name="example_collection",
     embedding_function=embeddings,
-    persist_directory="./chroma_langchain_db",  # Where to save data locally, remove if not necessary
+    persist_directory="./chroma_langchain_db",
 )
 
 import bs4
