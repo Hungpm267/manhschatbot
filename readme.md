@@ -56,10 +56,3 @@ python indexer.py
 - `chroma_langchain_db/` — Chroma vector store data
 - `requirements.txt` — Python dependencies
 
-## License
-
-MIT
-
----
-
-Made with ❤️ using Chainlit, LangChain, and Gemini.
